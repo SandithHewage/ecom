@@ -1097,7 +1097,7 @@ body {
 
   .site-footer {
     margin-top: -16px;
-    padding-bottom: calc(var(--space-4) + 16px);
+    padding-bottom: var(--space-4);
   }
 
   .footer-copy__rights {
