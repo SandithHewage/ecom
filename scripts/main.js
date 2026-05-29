@@ -1,5 +1,7 @@
 'use strict';
 
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 /* ─── ACCORDION ──────────────────────────────────────────────── */
 
 function initAccordion() {
@@ -195,6 +197,20 @@ function initSizeCalculator() {
     return null;
   }
 
+  function isUnderMinFit() {
+    if (currentUnit === 'imperial') {
+      var ft  = parseInt(document.getElementById('calc-ft').value, 10);
+      var ins = parseInt(document.getElementById('calc-in').value, 10);
+      var lbs = parseFloat(document.getElementById('calc-lbs').value);
+      var shortUnderLimit = !isNaN(ft) && !isNaN(ins) && (ft * 12 + ins) < 62;
+      var lightUnderLimit = !isNaN(lbs) && lbs < 110;
+      return shortUnderLimit || lightUnderLimit;
+    }
+    var cm = parseFloat(document.getElementById('calc-cm').value);
+    var kg = parseFloat(document.getElementById('calc-kg').value);
+    return (!isNaN(cm) && cm < 157) || (!isNaN(kg) && kg < 50);
+  }
+
   function isOverMaxFit() {
     if (currentUnit === 'imperial') {
       var ft  = parseInt(document.getElementById('calc-ft').value, 10);
@@ -229,7 +245,7 @@ function initSizeCalculator() {
   document.getElementById('calc-next').addEventListener('click', function () {
     var error = validate();
     if (error) { showError(error); heightWarningShown = false; return; }
-    if (isOverMaxFit() && !heightWarningShown) {
+    if ((isUnderMinFit() || isOverMaxFit()) && !heightWarningShown) {
       showError('your measurements are outside the typical fit range for this item — the recommendation provided may not fully reflect your proportions.');
       heightWarningShown = true;
       return;
@@ -282,6 +298,8 @@ function initSizeCalculator() {
   });
 }
 
+
+/* ─── LANDING ────────────────────────────────────────────────── */
 
 /* ─── IMAGE PROTECTION ───────────────────────────────────────── */
 

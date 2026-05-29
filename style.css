@@ -93,7 +93,7 @@ body {
 
 .site-header { animation: fade-up 900ms cubic-bezier(0.25, 0, 0.1, 1) both; animation-delay:   0ms; }
 .ecom-main   { animation: fade-up 900ms cubic-bezier(0.25, 0, 0.1, 1) both; animation-delay:  60ms; }
-.site-footer { animation: fade-up 900ms cubic-bezier(0.25, 0, 0.1, 1) both; animation-delay: 120ms; }
+.site-footer { animation: fade-up 900ms cubic-bezier(0.25, 0, 0.1, 1) both; animation-delay: 180ms; }
 
 
 /* ─── FRAME ──────────────────────────────────────────────────── */
@@ -1042,8 +1042,13 @@ body {
 
 /* ─── MOBILE ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .frame {
+    padding-top: var(--space-3);
+  }
+
   .site-header {
-    height: 130px;
+    height: 100px;
+    margin-bottom: -30px;
   }
 
   .site-header__logo-link {
