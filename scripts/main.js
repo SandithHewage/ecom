@@ -299,8 +299,6 @@ function initSizeCalculator() {
 }
 
 
-/* ─── LANDING ────────────────────────────────────────────────── */
-
 /* ─── IMAGE PROTECTION ───────────────────────────────────────── */
 
 document.addEventListener('contextmenu', function (e) {
