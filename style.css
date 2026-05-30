@@ -1086,6 +1086,26 @@ body {
     padding-bottom: var(--space-5);
   }
 
+  /* native scroll-snap carousel */
+  .gallery__clip {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .gallery__clip::-webkit-scrollbar {
+    display: none;
+  }
+  .gallery__track {
+    display: contents;
+  }
+  .gallery__img {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+
   .product__details {
     padding: var(--space-5) var(--space-5);
   }

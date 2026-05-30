@@ -439,31 +439,55 @@ function initLightbox(imgSrcs) {
 /* ─── GALLERY ────────────────────────────────────────────────── */
 
 function initGallery() {
+  var clip    = document.querySelector('.gallery__clip');
   var track   = document.querySelector('.gallery__track');
   var prevBtn = document.querySelector('.gallery__btn--prev');
   var nextBtn = document.querySelector('.gallery__btn--next');
   var dotsEl  = document.querySelector('.gallery__dots');
-  if (!track || !prevBtn || !nextBtn) return;
+  if (!track || !clip) return;
 
   var imgs     = Array.from(track.querySelectorAll('.gallery__img'));
   var total    = imgs.length;
   var imgSrcs  = imgs.map(function (img) { return img.src; });
   var lightbox = initLightbox(imgSrcs);
 
-  /* build dots */
+  /* build dots (click handlers added per-path below) */
   var dots = [];
   if (dotsEl) {
     for (var i = 0; i < total; i++) {
       var dot = document.createElement('button');
       dot.className = 'gallery__dot';
       dot.type = 'button';
-      (function(idx) {
-        dot.addEventListener('click', function () { if (!transitioning) goTo(idx + 1, false); });
-      })(i);
       dotsEl.appendChild(dot);
       dots.push(dot);
     }
   }
+
+  /* open lightbox on image click */
+  imgs.forEach(function (img, i) {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function () { lightbox.open(i); });
+  });
+
+  /* ── MOBILE: native CSS scroll-snap ── */
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    if (dots[0]) dots[0].classList.add('is-active');
+
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () {
+        clip.scrollTo({ left: i * clip.offsetWidth, behavior: 'smooth' });
+      });
+    });
+
+    clip.addEventListener('scroll', function () {
+      var idx = Math.round(clip.scrollLeft / clip.offsetWidth);
+      dots.forEach(function (d, j) { d.classList.toggle('is-active', j === idx); });
+    }, { passive: true });
+
+    return;
+  }
+
+  /* ── DESKTOP: JS translateX infinite-loop ── */
 
   function updateDots() {
     var realIndex = current - 1;
@@ -504,8 +528,12 @@ function initGallery() {
     transitioning = false;
   });
 
-  prevBtn.addEventListener('click', function () { if (!transitioning) goTo(current - 1, false); });
-  nextBtn.addEventListener('click', function () { if (!transitioning) goTo(current + 1, false); });
+  dots.forEach(function (d, i) {
+    d.addEventListener('click', function () { if (!transitioning) goTo(i + 1, false); });
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', function () { if (!transitioning) goTo(current - 1, false); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { if (!transitioning) goTo(current + 1, false); });
 
   /* touch swipe */
   var touchStartX = 0;
@@ -525,12 +553,6 @@ function initGallery() {
       goTo(touchDeltaX < 0 ? current + 1 : current - 1, false);
     }
     touchDeltaX = 0;
-  });
-
-  /* open lightbox on image click */
-  imgs.forEach(function (img, i) {
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', function () { lightbox.open(i); });
   });
 
   goTo(1, true);
